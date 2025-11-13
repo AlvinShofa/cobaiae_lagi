@@ -1,0 +1,24 @@
+# Abaikan dependensi Node (ini yang paling penting)
+node_modules/
+
+# Abaikan file Environment (JANGAN PERNAH upload ini ke GitHub)
+.env
+.env.*
+
+# Abaikan file log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Abaikan folder build (jika Anda build frontend)
+build/
+dist/
+
+# Abaikan file sistem operasi
+.DS_Store
+Thumbs.db
+
+# Abaikan file konfigurasi IDE
+.vscode/
+.idea/
