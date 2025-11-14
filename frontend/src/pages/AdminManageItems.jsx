@@ -1,3 +1,4 @@
+// File: frontend/src/pages/AdminManageItems.jsx
 import React, { useState, useEffect } from 'react';
 import itemService from '../services/itemService';
 import Layout from '../components/Layout';
@@ -79,7 +80,10 @@ export default function AdminManageItems() {
       fetchItems();
       closeModal();
     } catch (err) {
-      alert("Gagal menyimpan: " + (err.response?.data?.message || err.message));
+      // --- PERBAIKAN ERROR HANDLING ---
+      const message = err.response?.data?.message || err.message;
+      alert("Gagal menyimpan: " + message);
+      // ---------------------------------
     }
   };
   
@@ -89,7 +93,11 @@ export default function AdminManageItems() {
         await itemService.deleteItem(id);
         fetchItems();
     } catch (err) {
-        alert("Gagal menghapus: " + (err.response?.data?.message || err.message));
+        // --- PERBAIKAN ERROR HANDLING ---
+        // Ini akan menampilkan pesan error yang sesungguhnya dari backend
+        const message = err.response?.data?.message || err.message;
+        alert("Gagal menghapus: " + message);
+        // ---------------------------------
     }
   };
 
