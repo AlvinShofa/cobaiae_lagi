@@ -34,8 +34,7 @@ const approveBorrowing = asyncHandler(async (req, res) => {
   const itemData = await grpcCall(itemClient, 'GetItem', { id: borrowRequest.item_id });
   
   // --- PERBAIKAN BUG DI SINI ---
-  // Kita akses 'itemData.item.available_quantity', bukan 'itemData.available_quantity'
-  const newAvailableQuantity = itemData.item.available_quantity - borrowRequest.quantity;
+  const newAvailableQuantity = itemData.item - borrowRequest.quantity;
   // -----------------------------
 
   // 3. Kurangi stok di item-service
@@ -69,10 +68,13 @@ const rejectBorrowing = asyncHandler(async (req, res) => {
     
     const borrowRequest = response.borrow_request;
     
-    // Tidak ada perubahan stok, langsung kirim notif
+    // Ambil data item (hanya untuk nama)
+    const itemData = await grpcCall(itemClient, 'GetItem', { id: borrowRequest.item_id });
+
+    // Stok tidak berubah, langsung kirim notif
     await grpcCall(notificationClient, 'SendNotification', {
         user_id: borrowRequest.user_id,
-        message: `Mohon maaf, peminjaman Anda (ID: ${borrowRequest.id}) ditolak. Alasan: ${admin_notes || 'N/A'}`,
+        message: `Mohon maaf, peminjaman Anda untuk ${itemData.item.name} (ID: ${borrowRequest.id}) ditolak. Alasan: ${admin_notes || 'N/A'}`,
         type: 'BORROW_REJECTED'
     });
 
@@ -99,8 +101,7 @@ const markAsReturnedByAdmin = asyncHandler(async (req, res) => {
     const itemData = await grpcCall(itemClient, 'GetItem', { id: borrowRequest.item_id });
     
     // --- PERBAIKAN BUG DI SINI ---
-    // Kita akses 'itemData.item.available_quantity', bukan 'itemData.available_quantity'
-    const newAvailableQuantity = itemData.item.available_quantity + borrowRequest.quantity;
+    const newAvailableQuantity = itemData.item + borrowRequest.quantity;
     // -----------------------------
 
     // 3. Kembalikan stok ke item-service
